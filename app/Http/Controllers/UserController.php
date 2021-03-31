@@ -50,14 +50,7 @@ class UserController extends Controller
             throw new \Exception('credentials wrong');
         }
 
-        $rules = ['captcha' => 'required|captcha_api:'. request('key') . ',flat'];
-        $validator = validator()->make(request()->all(), $rules);
-        if ($validator->fails()) {
-            return response()->json([
-                'message' => 'invalid captcha',
-            ]);
-
-        } else {
+        if ($request->validated()) {
             $user->tokens()->delete();
 
             return response()->json([

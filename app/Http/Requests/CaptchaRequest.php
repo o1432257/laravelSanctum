@@ -5,7 +5,7 @@ namespace App\Http\Requests;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 
-class CaptchaRequest extends FormRequest
+class CaptchaRequest extends BaseRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -27,12 +27,5 @@ class CaptchaRequest extends FormRequest
         return [
             'captcha' => 'required|captcha_api:'. request('key') . ',flat'
         ];
-    }
-
-    public function messages()
-    {
-        return [
-            'captcha' => ''
-        ]
     }
 }

@@ -50,14 +50,12 @@ class UserController extends Controller
             throw new \Exception('credentials wrong');
         }
 
-        if ($request->validated()) {
-            $user->tokens()->delete();
+        $user->tokens()->delete();
 
-            return response()->json([
-                'status_code' => 200,
-                'token' => $user->createToken('userToken')->plainTextToken
-            ]);
-        }
+        return response()->json([
+            'status_code' => 200,
+            'token' => $user->createToken('userToken')->plainTextToken
+        ]);
     }
 
     public function logout(Request $request)

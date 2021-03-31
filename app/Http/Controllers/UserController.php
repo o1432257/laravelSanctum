@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\CaptchaRequest;
 use App\Models\User;
 use Exception;
 use Illuminate\Http\Request;
@@ -39,7 +40,7 @@ class UserController extends Controller
 
     }
 
-    public function login(Request $request)
+    public function login(CaptchaRequest $request)
     {
         $credentials = $request->only('email', 'password');
 
@@ -49,12 +50,21 @@ class UserController extends Controller
             throw new \Exception('credentials wrong');
         }
 
-        $user->tokens()->delete();
+        $rules = ['captcha' => 'required|captcha_api:'. request('key') . ',flat'];
+        $validator = validator()->make(request()->all(), $rules);
+        if ($validator->fails()) {
+            return response()->json([
+                'message' => 'invalid captcha',
+            ]);
 
-        return response()->json([
-            'status_code' => 200,
-            'token' => $user->createToken('userToken')->plainTextToken
-        ]);
+        } else {
+            $user->tokens()->delete();
+
+            return response()->json([
+                'status_code' => 200,
+                'token' => $user->createToken('userToken')->plainTextToken
+            ]);
+        }
     }
 
     public function logout(Request $request)

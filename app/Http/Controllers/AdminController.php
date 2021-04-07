@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 
 class AdminController extends Controller
@@ -71,5 +72,23 @@ class AdminController extends Controller
             'status_code' => '200',
             'auth' => Auth::guard('admin')->user()
         ]);
+    }
+
+    public function forgotPassword($email)
+    {
+        if(Admin::where('email', $email)->first())
+        {
+            Mail::to($email)->send(new \App\Mail\ResetPassswordMail());
+
+            return response()->json([
+                'status_code' => 200,
+                'message' => 'Please Check Your Email!!!'
+            ]);
+        }else{
+            return response()->json([
+                'status_code' => 400,
+                'message' => 'Wrong Email!!!'
+            ]);
+        }
     }
 }

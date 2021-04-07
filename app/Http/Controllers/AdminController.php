@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Mail\ResetPassswordMail;
 use App\Models\Admin;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
@@ -79,8 +78,7 @@ class AdminController extends Controller
     {
         if(Admin::where('email', $email)->first())
         {
-            $admin = Admin::where('email', $email)->first();
-            Mail::to($email)->send(new ResetPassswordMail($admin));
+            Mail::to($email)->send(new \App\Mail\ResetPassswordMail());
 
             return response()->json([
                 'status_code' => 200,

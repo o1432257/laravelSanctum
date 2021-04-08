@@ -7,8 +7,8 @@
     <title>Document</title>
 </head>
 <body>
-<p>{{$admin->name}}</p>
-<p>{{$admin->email}}</p>
+{{--<p>{{$admin->name}}</p>--}}
+{{--<p>{{$admin->email}}</p>--}}
 <a href="https://www.google.com/">設置新密碼</a>
 </body>
 </html>

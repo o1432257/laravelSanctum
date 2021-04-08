@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\ResetPasswordEmailJob;
 use App\Mail\ResetPassswordMail;
 use App\Models\Admin;
 use Illuminate\Http\Request;
@@ -77,20 +78,17 @@ class AdminController extends Controller
 
     public function forgotPassword($email)
     {
-        if(Admin::where('email', $email)->first())
-        {
-            $admin = Admin::where('email', $email)->first();
-            Mail::to($email)->send(new ResetPassswordMail($admin));
+        $admin = Admin::where('email', $email)->firstOrFail();
 
-            return response()->json([
-                'status_code' => 200,
-                'message' => 'Please Check Your Email!!!'
-            ]);
-        }else{
-            return response()->json([
-                'status_code' => 400,
-                'message' => 'Wrong Email!!!'
-            ]);
-        }
+        $message = (new ResetPassswordMail($admin))
+            ->onQueue('emails');
+
+        Mail::to($email)->queue($message);
+
+        return response()->json([
+            'status_code' => 200,
+            'message' => 'Please Check Your Email!!!'
+        ]);
+
     }
 }
